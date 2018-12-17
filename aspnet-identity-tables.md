@@ -1,0 +1,1 @@
+# Customizing ASP.NET Core Identity Table Names, Schema, and Primary Key Type

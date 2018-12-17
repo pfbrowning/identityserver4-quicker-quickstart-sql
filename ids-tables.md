@@ -1,0 +1,1 @@
+# Customizing IdentityServer4 SQL Server Table Names & Schema
