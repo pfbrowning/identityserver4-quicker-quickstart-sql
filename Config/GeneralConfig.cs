@@ -7,5 +7,6 @@ namespace IdentityServerSample.Configuration {
     /// </summary>
     public class GeneralConfig {
         public string[] AllowedCorsOrigins { get; set; }
+        public string ConnectionString { get; set; }
     }
 }

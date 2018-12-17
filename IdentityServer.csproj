@@ -13,5 +13,9 @@
     <PackageReference Include="Serilog.Sinks.File" Version="4.0.0"/>
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.0.0"/>
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2"/>
+    <PackageReference Include="IdentityServer4.EntityFramework" Version="2.3.2"/>
+    <PackageReference Include="IdentityServer4.AspNetIdentity" Version="2.3.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.2.0"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.0"/>
   </ItemGroup>
 </Project>

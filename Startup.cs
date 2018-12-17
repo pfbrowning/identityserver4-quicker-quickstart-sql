@@ -2,22 +2,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using IdentityServer4;
 using IdentityServer4.Models;
+using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Test;
 using IdentityServerSample.Configuration;
 using IdentityServerSample.Services;
 using Serilog;
+
 
 namespace IdentityServer
 {
@@ -61,26 +66,35 @@ namespace IdentityServer
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            /* Configure our instance of IdentityServer.  This is where 
-            much of the magic happens. */
+            var migrationsAssembly = typeof(Startup).GetTypeInfo().Assembly.GetName().Name;
+            
+            // Register the DB Context to for ASP.NET Core Identity
+            services.AddDbContext<ApplicationDbContext>(builder =>
+                builder.UseSqlServer(generalConfig.ConnectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
+
+            // Register ASP.NET Core Identity
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            // Configure IdentityServer
             services.AddIdentityServer()
-                /* Add statically-generated clients, identity resources, and API resources
-                for our quickstart.  For an important production application we'd probably 
-                want to configure this from a persistent store. */
-                .AddInMemoryClients(ClientConfig.GetClients())                         
-                .AddInMemoryIdentityResources(ResourceConfig.GetIdentityResources())
-                .AddInMemoryApiResources(ResourceConfig.GetApiResources())
-                .AddInMemoryPersistedGrants()
-                /* Add our test users alice and bob for demo purposes.  For a production 
-                application we'd obviously want to replace this with a persistent user
-                store, which generally would be implementation-specific. */
-                .AddTestUsers(TestUsersConfig.GetUsers())
                 /* Use AddDeveloperSigningCredential for debugging only.  When we deploy
                 we should consider using AddSigningCredential. */
                 .AddDeveloperSigningCredential()
                 /* ProfileService is used to issue claims for our id tokens
                 and access tokens. */
-                .AddProfileService<ProfileService>();
+                .AddProfileService<ProfileService>()
+                // Configure SQL Server peristed grant store
+                .AddOperationalStore(options =>
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(generalConfig.ConnectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+                // Configure SQL Server configuration store
+                .AddConfigurationStore(options =>
+                    options.ConfigureDbContext = builder =>
+                        builder.UseSqlServer(generalConfig.ConnectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+                // Tell IdentityServer to use ASP.NET Core Identity
+                .AddAspNetIdentity<IdentityUser>();
+                
 
             // Configure external identity providers
             services.AddAuthentication()
