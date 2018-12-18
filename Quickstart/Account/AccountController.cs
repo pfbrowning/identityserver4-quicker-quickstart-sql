@@ -85,11 +85,6 @@ namespace IdentityServer4.Quickstart.UI
 
             if (ModelState.IsValid) {
                 var user = await _userManager.FindByNameAsync(model.Username);
-                
-                if(user == null) {
-                    user = new IdentityUser { UserName = model.Username };
-                    await _userManager.CreateAsync(user, model.Password);
-                }  
 
                 if (user != null && await _userManager.CheckPasswordAsync(user, model.Password)) {
                     await _events.RaiseAsync(
