@@ -21,6 +21,7 @@ using IdentityServer4.EntityFramework.Mappers;
 using IdentityServer4.Test;
 using IdentityServerSample.Configuration;
 using IdentityServerSample.Services;
+using IdentityServer.Models;
 using Serilog;
 
 
@@ -73,7 +74,7 @@ namespace IdentityServer
                 builder.UseSqlServer(generalConfig.ConnectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)));
 
             // Register ASP.NET Core Identity
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole<int>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Configure IdentityServer
@@ -93,7 +94,7 @@ namespace IdentityServer
                     options.ConfigureDbContext = builder =>
                         builder.UseSqlServer(generalConfig.ConnectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
                 // Tell IdentityServer to use ASP.NET Core Identity
-                .AddAspNetIdentity<IdentityUser>();
+                .AddAspNetIdentity<ApplicationUser>();
                 
 
             // Configure external identity providers
