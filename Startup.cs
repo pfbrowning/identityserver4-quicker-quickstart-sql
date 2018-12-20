@@ -85,14 +85,37 @@ namespace IdentityServer
                 /* ProfileService is used to issue claims for our id tokens
                 and access tokens. */
                 .AddProfileService<ProfileService>()
-                // Configure SQL Server peristed grant store
-                .AddOperationalStore(options =>
-                    options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(generalConfig.ConnectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
-                // Configure SQL Server configuration store
-                .AddConfigurationStore(options =>
-                    options.ConfigureDbContext = builder =>
-                        builder.UseSqlServer(generalConfig.ConnectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly)))
+                // Configure SQL Server peristed grant store, schema, and table names
+                .AddOperationalStore(options => {
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(generalConfig.ConnectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly));
+                    options.DefaultSchema = "IdentityServer";
+                    options.DeviceFlowCodes.Name = "DeviceCode";
+                    options.PersistedGrants.Name = "PersistedGrant";
+                })
+                // Configure SQL Server configuration store, schema, and table names
+                .AddConfigurationStore(options => {
+                    options.ConfigureDbContext = builder => builder.UseSqlServer(generalConfig.ConnectionString, sqlOptions => sqlOptions.MigrationsAssembly(migrationsAssembly));
+                    options.DefaultSchema = "IdentityServer";
+                    options.ApiClaim.Name = "ApiClaim";
+                    options.ApiResourceProperty.Name = "ApiProperty";
+                    options.ApiResource.Name = "ApiResource";
+                    options.ApiScopeClaim.Name = "ApiScopeClaim";
+                    options.ApiScope.Name = "ApiScope";
+                    options.ApiSecret.Name = "ApiSecret";
+                    options.ClientClaim.Name = "ClientClaim";
+                    options.ClientCorsOrigin.Name = "ClientCorsOrigin";
+                    options.ClientGrantType.Name = "ClientGrantType";
+                    options.ClientIdPRestriction.Name = "ClientIdpRestriction";
+                    options.ClientPostLogoutRedirectUri.Name = "ClientPostLogoutRedirectUri";
+                    options.ClientProperty.Name = "ClientProperty";
+                    options.ClientRedirectUri.Name = "ClientRedirectUri";
+                    options.Client.Name = "Client";
+                    options.ClientScopes.Name = "ClientScope";
+                    options.ClientSecret.Name = "ClientSecret";
+                    options.IdentityClaim.Name = "IdentityClaim";
+                    options.IdentityResourceProperty.Name = "IdentityProperty";
+                    options.IdentityResource.Name = "IdentityResource";
+                })
                 // Tell IdentityServer to use ASP.NET Core Identity
                 .AddAspNetIdentity<ApplicationUser>();
                 
