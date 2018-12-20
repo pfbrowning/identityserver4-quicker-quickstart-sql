@@ -7,10 +7,11 @@ This guide assumes that you already have ASP.NET Core Identity wired up within y
 I'm using an [IdentityServer quickstart implementation](https://github.com/pfbrowning/identityserver4-quicker-quickstart-sql) with ASP.NET Core Identity added manually via [this tutorial](https://www.scottbrady91.com/Identity-Server/Getting-Started-with-IdentityServer-4) as an example, but the process should be the same or very similar for any .NET Core 2.X application which uses ASP.NET Core Identity.
 
 ## Changing The Primary Key To An Integer
-First we'll need to find the ASP.NET Core Identity registration.  In Startup.cs you should see a line which starts with `services.AddIdentity`.  We'll need to change three things here:
+First we'll need to find the ASP.NET Core Identity registration.  In Startup.cs you should see a line which starts with `services.AddIdentity`.  We'll need to change four things here:
 1. The first generic type that you see referenced will be either IdentityUser, ApplicationUser (which inherits from IdentityUser), or some other custom User class which also inherits from IdentityUser.  Regardless of whether you're using IdentityUser directly or inheriting from IdentityUser, change `IdentityUser` to `IdentityUser<int>`.
 2. The second generic type should be IdentityRole.  Change `IdentityRole` to `IdentityRole<int>`.
 3. Take a look at your DB Context class.  `ApplicationDbContext` should inherit from `IdentityDbContext` or `IdentityDbContext<ApplicationUser>`.  Change the IdentityDbContext superclass to `IdentityDbContext<ApplicationUser, IdentityRole<int>, int>`.  Obviously if you're using something other than `ApplicationUser` as your user type you'll want to fill that in accordingly.
+4. If you're changing the registered user type, such as changing `IdentityUser` to `IdentityUser<int>` or to a custom `ApplicationUser`, then search through your entire application and replace any other references to the old user type as necessary.
 
 In my application I was previously registering IdentityUser directly, but for the sake of consistency I created an ApplicationUser class which inherits from `IdentityUser<int>`:
 ```csharp
@@ -82,7 +83,7 @@ protected override void OnModelCreating(ModelBuilder builder)
 }
 ```
 You can see my full ApplicationDbContext.cs [here](https://github.com/pfbrowning/identityserver4-quicker-quickstart-sql/blob/master/ApplicationDbContext.cs).
-## Updating Our Tables
+## Persisting Our Changes
 If you're changing the primary key type on a set of existing tables, then you'll probably get an error stating that "To change the IDENTITY property of a column, the column needs to be dropped and recreated.".  The simplest way to get around this is to just delete your existing Identity tables and re-create your tables from scratch with an EF migration.
 
 To create or update our tables, we'll just run an EF migration.  Assuming you're using the Dotnet CLI, just run the following.  If you're using a different name for your ASP.NET Core Identity DB Context, then you'll obviously want to update that accordingly.
@@ -90,3 +91,5 @@ To create or update our tables, we'll just run an EF migration.  Assuming you're
 dotnet ef migrations add AspNetTableCustomizations -c ApplicationDbContext
 dotnet ef database update -c ApplicationDbContext
 ```
+## Example Source
+You can view the full source code for the project that I'm using as an example [here](https://github.com/pfbrowning/identityserver4-quicker-quickstart-sql)

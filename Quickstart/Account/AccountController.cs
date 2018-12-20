@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer.Models;
 
 namespace IdentityServer4.Quickstart.UI
 {
@@ -28,7 +29,7 @@ namespace IdentityServer4.Quickstart.UI
     [AllowAnonymous]
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
@@ -39,7 +40,7 @@ namespace IdentityServer4.Quickstart.UI
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
-            UserManager<IdentityUser> userManager)
+            UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
             _interaction = interaction;
@@ -88,7 +89,7 @@ namespace IdentityServer4.Quickstart.UI
 
                 if (user != null && await _userManager.CheckPasswordAsync(user, model.Password)) {
                     await _events.RaiseAsync(
-                        new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName));
+                        new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName));
 
                     AuthenticationProperties props = null;
                     if (AccountOptions.AllowRememberLogin && model.RememberLogin) {
@@ -98,7 +99,7 @@ namespace IdentityServer4.Quickstart.UI
                         };
                     };         
 
-                    await HttpContext.SignInAsync(user.Id, user.UserName, props);
+                    await HttpContext.SignInAsync(user.Id.ToString(), user.UserName, props);
 
                     if (_interaction.IsValidReturnUrl(model.ReturnUrl) 
                             || Url.IsLocalUrl(model.ReturnUrl)) {
