@@ -14,12 +14,14 @@ When finished, this project will be a copy of the [IdentityServer4 Quicker Quick
 2. Install dependencies with `dotnet restore`
 3. Set up the SQL Server instance and database that you want to use and update the ConnectionString in appsettings.json accordingly.
 4. Initialize the database by running the following EF migrations:
-    * dotnet ef migrations add InitialIdentityServerMigration -c PersistedGrantDbContext
-    * dotnet ef migrations add InitialIdentityServerMigration -c ConfigurationDbContext
-    * dotnet ef migrations add InitialIdentityServerMigration -c ApplicationDbContext
-    * dotnet ef database update -c PersistedGrantDbContext
-    * dotnet ef database update -c ConfigurationDbContext
-    * dotnet ef database update -c ApplicationDbContext
+```
+dotnet ef migrations add InitialIdentityServerMigration -c PersistedGrantDbContext
+dotnet ef migrations add InitialIdentityServerMigration -c ConfigurationDbContext
+dotnet ef migrations add InitialIdentityServerMigration -c ApplicationDbContext
+dotnet ef database update -c PersistedGrantDbContext
+dotnet ef database update -c ConfigurationDbContext
+dotnet ef database update -c ApplicationDbContext
+```
 5. If you want to use 'local login' to log in with a basic ASP.NET Core Identity test user, then run 'init_alice_and_bob.sql' in the 'Scripts' folder
 to initialize the 'alice' and 'bob' test users (both use a password of 'Password123!').  Alternatively you can use the external login or create your own ASP.NET Core Identity users to test with.
 6. If you want to use a working test configuration for IdentityServer clients, resources, etc, then run 'init_identityserver_config.sql' in the 'Scripts' folder.  Alternatively you can set up your own IdentityServer configuration if you prefer.
