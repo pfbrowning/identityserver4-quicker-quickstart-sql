@@ -1,7 +1,7 @@
 # IdentityServer4 Quicker Quickstart SQL
 
 ## Introduction
-When finished, this project will be a copy of the [IdentityServer4 Quicker Quickstart](https://github.com/pfbrowning/identityserver4-quicker-quickstart) with the following features & modifications:
+This project is a copy of the [IdentityServer4 Quicker Quickstart](https://github.com/pfbrowning/identityserver4-quicker-quickstart) with the following features & modifications:
 * IdentityServer4 Configuration & Persisted Grant stores via SQL Server
     * Custom schema & table names for the IdentityServer tables
 * ASP.NET Core Identity
@@ -10,10 +10,10 @@ When finished, this project will be a copy of the [IdentityServer4 Quicker Quick
 
 ## Usage
 1. Install the .NET Core 2.2 SDK if you haven't already.
-1. Clone the repo.
-2. Install dependencies with `dotnet restore`
-3. Set up the SQL Server instance and database that you want to use and update the ConnectionString in appsettings.json accordingly.
-4. Initialize the database by running the following EF migrations:
+2. Clone the repo.
+3. Install dependencies with `dotnet restore`
+4. Set up the SQL Server instance and database that you want to use and update the ConnectionString in appsettings.json accordingly.
+5. Initialize the database by running the following EF migrations:
 ```
 dotnet ef migrations add InitialIdentityServerMigration -c PersistedGrantDbContext
 dotnet ef migrations add InitialIdentityServerMigration -c ConfigurationDbContext
