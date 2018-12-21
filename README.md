@@ -26,3 +26,8 @@ dotnet ef database update -c ApplicationDbContext
 to initialize the 'alice' and 'bob' test users (both use a password of 'Password123!').  Alternatively you can use the external login or create your own ASP.NET Core Identity users to test with.
 6. If you want to use a working test configuration for IdentityServer clients, resources, etc, then run 'init_identityserver_config.sql' in the 'Scripts' folder.  Alternatively you can set up your own IdentityServer configuration if you prefer.
 7. Run the application as you normally would - either with `dotnet build` & `dotnet run` or with the VS / VS Code debugger
+
+## Links
+Portions of this application were used as a sample for the following blog posts:
+* [Customizing IdentityServer4 SQL Server Table Names & Schema](https://browninglogic.com/2018/12/21/customizing-identityserver4-sql-server-table-names-schema/)
+* [Configuring the ASP.NET Core Identity Table Names & Primary Key Type](https://browninglogic.com/2018/12/20/customizing-the-asp-net-core-identity-table-names-and-primary-key-type/)
