@@ -30,6 +30,8 @@ namespace IdentityServer4.Quickstart.UI
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly IAuthenticationSchemeProvider _schemeProvider;
@@ -40,9 +42,11 @@ namespace IdentityServer4.Quickstart.UI
             IClientStore clientStore,
             IAuthenticationSchemeProvider schemeProvider,
             IEventService events,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
             _interaction = interaction;
             _clientStore = clientStore;
             _schemeProvider = schemeProvider;
@@ -151,6 +155,8 @@ namespace IdentityServer4.Quickstart.UI
             {
                 // delete local authentication cookie
                 await HttpContext.SignOutAsync();
+
+                await this._signInManager.SignOutAsync();
 
                 // raise the logout event
                 await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
