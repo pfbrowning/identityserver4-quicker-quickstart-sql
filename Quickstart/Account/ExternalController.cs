@@ -110,6 +110,9 @@ namespace Host.Quickstart.Account
             from the ClaimsPrincipal provided to ProfileService */
             additionalLocalClaims.AddRange(claims);
 
+            // Add ASP.NET Core Identity SecurityStamp claim to the cookie so that Security stamp validation succeeds
+            additionalLocalClaims.Add(new Claim("AspNet.Identity.SecurityStamp", user.SecurityStamp));
+
             // issue authentication cookie for user
             await _events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id.ToString(), user.UserName));
             await HttpContext.SignInAsync(user.Id.ToString(), user.UserName, provider, localSignInProps, additionalLocalClaims.ToArray());
